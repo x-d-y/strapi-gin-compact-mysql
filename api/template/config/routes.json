@@ -1,0 +1,7 @@
+{
+    "routes":[
+        "method":"GET",
+        "path":"/test1",
+        "handler":""
+    ]   
+}
