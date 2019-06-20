@@ -1,7 +1,15 @@
 {
+    "hello":"sdf",
     "routes":[
-        "method":"GET",
+      {
+        "method": "GET",
         "path":"/test1",
-        "handler":""
+        "handler":"test1Hadler"
+      },
+      {
+        "method": "POST",
+        "path":"/test2",
+        "handler":"test2Hadler"
+      }
     ]   
 }
