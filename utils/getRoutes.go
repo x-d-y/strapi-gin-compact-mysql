@@ -4,18 +4,18 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	//getRoutes "github.com/xdy/gin/utils"
 )
 
-type routeInfo struct {
+type RouteInfo struct {
 	Method  string `json:"method"`
 	Path    string `json:"path"`
 	Handler string `json:"handler"`
 }
 
-func parseRoutes(data []byte) []routeInfo {
+func parseRoutes(data []byte) []RouteInfo {
 	var routeInfo_ interface{}
-	var routeSlice []routeInfo
-	//data:{json}
+	var routeSlice []RouteInfo
 	err_ := json.Unmarshal(data, &routeInfo_) //获取得到route.json内容
 	if err_ != nil {
 		fmt.Println(err_)
@@ -29,10 +29,11 @@ func parseRoutes(data []byte) []routeInfo {
 		case int:
 			fmt.Println(k, "is int", vv)
 		case []interface{}:
-			fmt.Println(k, "is an array:")
-			route := routeInfo{}
+			//fmt.Println(k, "is an array:")
+			route := RouteInfo{}
 			for _, u := range vv {
 				u_ := u.(map[string]interface{})
+				//fmt.Println(u_)
 				if method, ok := u_["method"]; ok {
 					route.Method = method.(string)
 				}
@@ -48,14 +49,14 @@ func parseRoutes(data []byte) []routeInfo {
 			fmt.Println(k, "is of a type I don't know how to handle")
 		}
 	}
-	fmt.Println(routeSlice, "!!!!!!!!!!!")
+	// fmt.Println(routeSlice)
 	return routeSlice
 }
 
-func Routes() map[string][]routeInfo {
+func Routes() map[string][]RouteInfo {
 	apiFolder := "api"
 	apis, _ := ioutil.ReadDir(apiFolder)
-	groupRoutes := make(map[string][]routeInfo)
+	groupRoutes := make(map[string][]RouteInfo)
 	for _, api := range apis {
 		path_ := apiFolder + "/" + api.Name()
 
@@ -72,6 +73,5 @@ func Routes() map[string][]routeInfo {
 		}
 
 	}
-	fmt.Println(groupRoutes)
 	return groupRoutes
 }

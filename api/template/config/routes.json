@@ -6,9 +6,10 @@
         "handler":"test1Hadler"
       },
       {
-        "method": "POST",
+        "method": "GET",
         "path":"/test2",
         "handler":"test2Hadler"
       }
+
     ]   
 }

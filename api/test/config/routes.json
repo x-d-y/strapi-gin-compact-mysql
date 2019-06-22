@@ -1,0 +1,14 @@
+{
+    "routes":[
+      {
+        "method": "GET",
+        "path":"/test1",
+        "handler":"newTest1Hadler"
+      },
+      {
+        "method": "GET",
+        "path":"/test2",
+        "handler":"newTest2Hadler"
+      }
+    ]   
+}
