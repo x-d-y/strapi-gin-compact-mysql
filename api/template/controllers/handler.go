@@ -21,10 +21,8 @@ func bindHandler() map[string]reflect.Value {
 	vf := reflect.ValueOf(&ruTest)
 	mNum := vf.NumMethod()
 	vft := vf.Type()
-	//fmt.Println("NumMethod:", mNum)
 	for i := 0; i < mNum; i++ {
 		mName := vft.Method(i).Name
-		//fmt.Println("index:", i, " MethodName:", mName)
 		crMap[mName] = vf.Method(i)
 	}
 	return crMap
@@ -39,9 +37,8 @@ func LoadHandler(router *gin.Engine, routerHandeler map[string][]getRoutes.Route
 	for k, v := range routerHandeler {
 		if k == cPath {
 			groupRoute := router.Group(k)
-			for i, u := range v {
+			for _, u := range v {
 				u_ := u
-				fmt.Println(i)
 				Handler := []rune(u_.Handler)
 				if Handler[0] >= 97 && Handler[0] <= 122 {
 					Handler[0] -= 32

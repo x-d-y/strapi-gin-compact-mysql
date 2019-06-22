@@ -7,7 +7,7 @@
       },
       {
         "method": "PUT",
-        "path":"/update-Test",
+        "path":"/put-test/:name",
         "handler":"UpdateOne"
       },
       {
