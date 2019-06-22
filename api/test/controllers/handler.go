@@ -11,6 +11,7 @@ import (
 	"github.com/gin-gonic/gin"
 	getRoutes "github.com/xdy/gin/utils/getRoutes"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -108,9 +109,10 @@ func (r *Routers) UpdateOne(c *gin.Context) {
 	if err := json.Unmarshal(body, &model); err != nil {
 		log.Printf("transfer to json err")
 	}
-	fmt.Println(model)
-	paramas, _ := ioutil.ReadAll(c.Request.URL.Query)
-	updateResult, err := collection.UpdateOne(context.TODO(), bson.D{{"age", 17}}, bson.D{{"$set", model}})
+	paramas := c.Param("id")
+	_ = paramas
+	objctId, _ := primitive.ObjectIDFromHex("5d0e2a3d4cf6f4e9f68d2a9e")
+	updateResult, err := collection.UpdateOne(context.TODO(), bson.D{{"_id", objctId}}, bson.D{{"$set", model}})
 	if err != nil {
 		log.Fatal(err)
 	}
