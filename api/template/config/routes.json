@@ -1,15 +1,24 @@
 {
     "routes":[
       {
-        "method": "GET",
-        "path":"/test1",
-        "handler":"test1Hadler"
+        "method": "POST",
+        "path":"/post-test",
+        "handler":"InsertOne"
+      },
+      {
+        "method": "PUT",
+        "path":"/update-Test",
+        "handler":"UpdateOne"
       },
       {
         "method": "GET",
-        "path":"/test2",
-        "handler":"test2Hadler"
+        "path":"/get-test",
+        "handler":"FindOne"
+      },    
+      {
+        "method": "DELETE",
+        "path":"/delete-test",
+        "handler":"DeleteOne"
       }
-
     ]   
 }
