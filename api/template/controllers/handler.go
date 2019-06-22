@@ -5,7 +5,7 @@ import (
 	"reflect"
 
 	"github.com/gin-gonic/gin"
-	getRoutes "github.com/xdy/gin/utils"
+	getRoutes "github.com/xdy/gin/utils/getRoutes"
 )
 
 type Routers struct {

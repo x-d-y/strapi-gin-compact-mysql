@@ -4,7 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	template "github.com/xdy/gin/api/template/controllers"
 	test "github.com/xdy/gin/api/test/controllers"
-	getRoutes "github.com/xdy/gin/utils"
+	getRoutes "github.com/xdy/gin/utils/getRoutes"
 )
 
 func Startup(router *gin.Engine) map[string][]getRoutes.RouteInfo {
