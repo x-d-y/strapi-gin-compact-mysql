@@ -88,7 +88,7 @@ func LoadHandler(router *gin.Engine, routerHandeler map[string][]getRoutes.Route
 type Model struct {
 	Name string `form:"name"`
 	Age  int    `form:"age"`
-	City string `form:city`
+	City string `form:"city"`
 }
 
 func (r *Routers) InsertOne(c *gin.Context) {
@@ -111,7 +111,7 @@ func (r *Routers) UpdateOne(c *gin.Context) {
 	}
 	paramas := c.Param("id")
 	_ = paramas
-	objctId, _ := primitive.ObjectIDFromHex("5d0e2a3d4cf6f4e9f68d2a9e")
+	objctId, _ := primitive.ObjectIDFromHex("5d0ef0ea4f163f9383f8827c")
 	updateResult, err := collection.UpdateOne(context.TODO(), bson.D{{"_id", objctId}}, bson.D{{"$set", model}})
 	if err != nil {
 		log.Fatal(err)
@@ -120,8 +120,13 @@ func (r *Routers) UpdateOne(c *gin.Context) {
 	fmt.Println("this is test2Handler")
 }
 func (r *Routers) FindOne(c *gin.Context) {
+	model := &Model{}
 	query := c.Request.URL.Query()
-	fmt.Println(query)
+	fmt.Println(query, model.Name)
+	t := reflect.TypeOf(model).Elem().NumField()
+	fmt.Println(t)
+	// field := t.Field(0)
+	// fmt.Println(field.Tag.Get("form"))
 	fmt.Println("this is test2Handler")
 }
 func (r *Routers) DeleteOne(c *gin.Context) {
