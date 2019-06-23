@@ -123,10 +123,17 @@ func (r *Routers) FindOne(c *gin.Context) {
 	model := &Model{}
 	query := c.Request.URL.Query()
 	fmt.Println(query, model.Name)
-	t := reflect.TypeOf(model).Elem().NumField()
+	t := reflect.TypeOf(model)
+	fmt.Println(model)
+	n := t.Elem().NumField()
+	for i := 0; i < n; i++ {
+		model_ := Model{}
+		st := reflect.TypeOf(model_)
+		field := st.Field(i)
+		fmt.Println(field.Tag.Get("form"))
+	}
 	fmt.Println(t)
-	// field := t.Field(0)
-	// fmt.Println(field.Tag.Get("form"))
+
 	fmt.Println("this is test2Handler")
 }
 func (r *Routers) DeleteOne(c *gin.Context) {
