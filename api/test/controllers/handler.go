@@ -120,6 +120,8 @@ func (r *Routers) UpdateOne(c *gin.Context) {
 	fmt.Println("this is test2Handler")
 }
 func (r *Routers) FindOne(c *gin.Context) {
+	query := c.Request.URL.Query()
+	fmt.Println(query)
 	fmt.Println("this is test2Handler")
 }
 func (r *Routers) DeleteOne(c *gin.Context) {
