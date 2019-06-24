@@ -34,7 +34,12 @@ async function post(){
   data ={
     age:18
   }
-  let res = await Request("http://localhost:8080/test/get-test?name=xdy&age=13",'get',data)
+
+  let res = await Request("http://localhost:8080/test/post-test",'post',data)
+  data.age = 17
+  res = await Request("http://localhost:8080/test/put-test/111",'put',data)
+  res = await Request("http://localhost:8080/test/get-test?name=xdy&age=13",'get',data)
+
 } 
 
 post()

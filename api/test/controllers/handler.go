@@ -13,6 +13,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 type Routers struct {
@@ -111,7 +112,7 @@ func (r *Routers) UpdateOne(c *gin.Context) {
 	}
 	paramas := c.Param("id")
 	_ = paramas
-	objctId, _ := primitive.ObjectIDFromHex("5d0ef0ea4f163f9383f8827c")
+	objctId, _ := primitive.ObjectIDFromHex("5d10a4897150fd13f7d8f3e1")
 	updateResult, err := collection.UpdateOne(context.TODO(), bson.D{{"_id", objctId}}, bson.D{{"$set", model}})
 	if err != nil {
 		log.Fatal(err)
@@ -120,21 +121,49 @@ func (r *Routers) UpdateOne(c *gin.Context) {
 	fmt.Println("this is test2Handler")
 }
 func (r *Routers) FindOne(c *gin.Context) {
-	model := &Model{}
-	query := c.Request.URL.Query()
-	fmt.Println(query, model.Name)
-	t := reflect.TypeOf(model)
-	fmt.Println(model)
-	n := t.Elem().NumField()
-	for i := 0; i < n; i++ {
-		model_ := Model{}
-		st := reflect.TypeOf(model_)
-		field := st.Field(i)
-		fmt.Println(field.Tag.Get("form"))
-	}
-	fmt.Println(t)
+	// model := &Model{}
+	// query := c.Request.URL.Query()
+	// fmt.Println(query)
+	// t := reflect.TypeOf(model)
+	// n := t.Elem().NumField()
+	// for i := 0; i < n; i++ {
+	// 	st := reflect.TypeOf(*model)
+	// 	field := st.Field(i)
+	// 	queryValue := query[field.Tag.Get("form")]
+	// 	if len(queryValue) >= 1 {
+	// 		fmt.Println(field.Type, "~~~~~~~~")
+	// 		if(field.Type=="string"){
 
+	// 		}
+
+	// 	}
+	// }
+	var model Model
+	if c.ShouldBind(&model) == nil {
+		log.Println(model.Name)
+		log.Println(model.Age)
+		log.Println(model.City)
+	}
 	fmt.Println("this is test2Handler")
+	findOptions := options.Find()
+	findOptions.SetLimit(2)
+	var results []*Model
+	cur, err := collection.Find(context.TODO(), bson.D{{}}, findOptions)
+	if err != nil {
+		log.Fatal(err)
+	}
+	for cur.Next(context.TODO()) {
+
+		// create a value into which the single document can be decoded
+		var elem Model
+		err := cur.Decode(&elem)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		results = append(results, &elem)
+	}
+
 }
 func (r *Routers) DeleteOne(c *gin.Context) {
 	fmt.Println("this is test2Handler")
