@@ -6,18 +6,23 @@
         "handler":"InsertOne"
       },
       {
+        "method": "GET",
+        "path":"/get-test/:_id",
+        "handler":"FindOne"
+      },
+      {
         "method": "PUT",
-        "path":"/put-test/:id",
+        "path":"/put-test/:_id",
         "handler":"UpdateOne"
       },
       {
         "method": "GET",
         "path":"/get-test",
-        "handler":"FindOne"
+        "handler":"Find"
       },    
       {
         "method": "DELETE",
-        "path":"/delete-test",
+        "path":"/delete-test/:_id",
         "handler":"DeleteOne"
       }
     ]   

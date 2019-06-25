@@ -32,13 +32,15 @@ async function Request(Url,method,data){
 
 async function post(){
   data ={
-    age:18
+    name:"xdy"
   }
 
   let res = await Request("http://localhost:8080/test/post-test",'post',data)
   data.age = 17
   res = await Request("http://localhost:8080/test/put-test/111",'put',data)
-  res = await Request("http://localhost:8080/test/get-test?name=xdy&age=13",'get',data)
+  res = await Request("http://localhost:8080/test/get-test?name=xdy",'get',data)
+  res = await Request("http://localhost:8080/test/delete-test/111",'delete',data)
+  res = await Request("http://localhost:8080/test/get-test/5d11a7aab07436cdcb64eec0",'get',data)
 
 } 
 

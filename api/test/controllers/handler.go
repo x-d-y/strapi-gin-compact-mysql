@@ -110,8 +110,9 @@ func (r *Routers) UpdateOne(c *gin.Context) {
 	if err := json.Unmarshal(body, &model); err != nil {
 		log.Printf("transfer to json err")
 	}
-	paramas := c.Param("id")
+	paramas := c.Param("_id")
 	_ = paramas
+
 	objctId, _ := primitive.ObjectIDFromHex("5d10a4897150fd13f7d8f3e1")
 	updateResult, err := collection.UpdateOne(context.TODO(), bson.D{{"_id", objctId}}, bson.D{{"$set", model}})
 	if err != nil {
@@ -121,40 +122,29 @@ func (r *Routers) UpdateOne(c *gin.Context) {
 	fmt.Println("this is test2Handler")
 }
 func (r *Routers) FindOne(c *gin.Context) {
-	// model := &Model{}
-	// query := c.Request.URL.Query()
-	// fmt.Println(query)
-	// t := reflect.TypeOf(model)
-	// n := t.Elem().NumField()
-	// for i := 0; i < n; i++ {
-	// 	st := reflect.TypeOf(*model)
-	// 	field := st.Field(i)
-	// 	queryValue := query[field.Tag.Get("form")]
-	// 	if len(queryValue) >= 1 {
-	// 		fmt.Println(field.Type, "~~~~~~~~")
-	// 		if(field.Type=="string"){
+	paramas := c.Param("_id")
+	_ = paramas
+	var result Model
+	objctId, _ := primitive.ObjectIDFromHex(paramas)
 
-	// 		}
+	err := collection.FindOne(context.TODO(), bson.D{{"_id", objctId}}).Decode(&result)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Printf("Found a single document: %+v\n", result)
 
-	// 	}
-	// }
+}
+func (r *Routers) Find(c *gin.Context) {
 	var model Model
 	if c.ShouldBind(&model) == nil {
-		log.Println(model.Name)
-		log.Println(model.Age)
-		log.Println(model.City)
 	}
-	fmt.Println("this is test2Handler")
 	findOptions := options.Find()
-	findOptions.SetLimit(2)
 	var results []*Model
-	cur, err := collection.Find(context.TODO(), bson.D{{}}, findOptions)
+	cur, err := collection.Find(context.TODO(), model, findOptions)
 	if err != nil {
 		log.Fatal(err)
 	}
 	for cur.Next(context.TODO()) {
-
-		// create a value into which the single document can be decoded
 		var elem Model
 		err := cur.Decode(&elem)
 		if err != nil {
@@ -163,8 +153,16 @@ func (r *Routers) FindOne(c *gin.Context) {
 
 		results = append(results, &elem)
 	}
+	fmt.Println(len(results))
 
 }
 func (r *Routers) DeleteOne(c *gin.Context) {
-	fmt.Println("this is test2Handler")
+	paramas := c.Param("_id")
+	_ = paramas
+	objctId, _ := primitive.ObjectIDFromHex("5d10a4897150fd13f7d8f3e1")
+	deleteResult, err := collection.DeleteMany(context.TODO(), bson.D{{"_id", objctId}})
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Printf("Deleted %v documents in the trainers collection\n", deleteResult.DeletedCount)
 }
