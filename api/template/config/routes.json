@@ -1,6 +1,11 @@
 {
     "routes":[
       {
+        "method": "GET",
+        "path":"/gets-test",
+        "handler":"FindAll"
+      },
+      {
         "method": "POST",
         "path":"/post-test",
         "handler":"InsertOne"

@@ -1,4 +1,4 @@
-package main
+package mysql
 
 import (
 	"database/sql"
@@ -165,7 +165,28 @@ func Delete(db *sql.DB, table string, query map[string]interface{}, dataform int
 	fmt.Printf("ID=%d, affected=%d\n", lastId, rowCnt)
 }
 
-func main() {
+func MysqlClient() *sql.DB {
+	table := "test"
+	db, err := sql.Open("mysql", "root:123456@/test1")
+	fmt.Println(err)
+	if err != nil {
+		log.Fatal(err)
+	}
+	type dataForm struct {
+		name   string
+		salary int
+		deptId int
+	}
+	dataform := dataForm{}
+	data_ := make(map[string]interface{})
+	data_["name"] = "xie"
+	data_["salary"] = 111
+	data_["deptId"] = 23
+	Get(db, table, data_, dataform)
+	return db
+}
+
+func main_() {
 
 	table := "test"
 	db, err := sql.Open("mysql", "root:123456@/test1")

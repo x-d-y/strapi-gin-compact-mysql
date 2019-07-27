@@ -5,21 +5,21 @@ import (
 	"reflect"
 
 	"github.com/gin-gonic/gin"
-	test "github.com/xdy/gin/api/test/controllers"
+	template "github.com/xdy/gin/api/template/controllers"
 	getRoutes "github.com/xdy/gin/utils/getRoutes"
-	mongodb "github.com/xdy/gin/utils/mongoDbDriver"
-	"go.mongodb.org/mongo-driver/mongo"
+	mysql "github.com/xdy/gin/utils/mysqlDbDriver"
 )
 
 func Startup(router *gin.Engine) map[string][]getRoutes.RouteInfo {
-	route := getRoutes.Routes()        //解析路由
-	client := mongodb.MongodbInitial() //链接数据库
-	handler := test.BindHandler(client)
-	routerFuncLoader(router, route, client, "test", handler)
+	route := getRoutes.Routes() //解析路由
+	mysql.MysqlClient()
+	//client := mongodb.MongodbInitial() //链接数据库
+	handler := template.BindHandler()
+	routerFuncLoader(router, route, "template", handler)
 	return route
 }
 
-func routerFuncLoader(router *gin.Engine, routerHandeler map[string][]getRoutes.RouteInfo, client_ *mongo.Client, api string, crMap map[string]reflect.Value) {
+func routerFuncLoader(router *gin.Engine, routerHandeler map[string][]getRoutes.RouteInfo, api string, crMap map[string]reflect.Value) {
 	for k, v := range routerHandeler {
 		fmt.Println(k, v)
 		if k == api {
