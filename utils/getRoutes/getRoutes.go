@@ -33,7 +33,6 @@ func parseRoutes(data []byte) []RouteInfo {
 			route := RouteInfo{}
 			for _, u := range vv {
 				u_ := u.(map[string]interface{})
-				//fmt.Println(u_)
 				if method, ok := u_["method"]; ok {
 					route.Method = method.(string)
 				}
@@ -59,7 +58,6 @@ func Routes() map[string][]RouteInfo {
 	groupRoutes := make(map[string][]RouteInfo)
 	for _, api := range apis {
 		path_ := apiFolder + "/" + api.Name()
-
 		apiConfig, _ := ioutil.ReadDir(path_ + "/" + "config")
 		for _, routesJson := range apiConfig {
 			data, err := ioutil.ReadFile(path_ + "/" + "config" + "/" + routesJson.Name())
@@ -68,7 +66,6 @@ func Routes() map[string][]RouteInfo {
 				return groupRoutes
 			}
 			res := parseRoutes(data)
-			//_ = res
 			groupRoutes[api.Name()] = res
 		}
 
