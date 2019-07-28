@@ -19,7 +19,24 @@ var db *sql.DB
 var table string
 var model map[string]string
 
+//tableC string, model map[string]string
+func chenckForTable() {
+	a := "id INT NULL,"
+
+	sql := fmt.Sprintf(`CREATE TABLE test1.NewTable (
+		%s
+		name varchar(100) NULL,
+		salary INT NULL,
+		deptId INT NULL,
+	)
+	ENGINE=InnoDB
+	DEFAULT CHARSET=utf8
+	COLLATE=utf8_general_ci;`, a)
+	fmt.Println(sql)
+}
+
 func Intatial(db_ *sql.DB, table_ string, apiFolder string) map[string]reflect.Value {
+	chenckForTable()
 	db = db_
 	table = table_
 	modelJson := path.Join("api", apiFolder, "models", "models.json")
@@ -45,7 +62,7 @@ func Intatial(db_ *sql.DB, table_ string, apiFolder string) map[string]reflect.V
 
 func (r *Routers) InsertOne(c *gin.Context) {
 	data_ := make(map[string]interface{})
-	data_["name"] = "xie"
+	data_["name"] = "谢"
 	data_["salary"] = 111
 	data_["deptId"] = 23
 	mysql.Insert(db, table, data_)

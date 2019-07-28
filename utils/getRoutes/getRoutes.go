@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"path"
 	//getRoutes "github.com/xdy/gin/utils"
 )
 
@@ -57,11 +58,10 @@ func Routes() map[string][]RouteInfo {
 	apis, _ := ioutil.ReadDir(apiFolder)
 	groupRoutes := make(map[string][]RouteInfo)
 	for _, api := range apis {
-		path_ := apiFolder + "/" + api.Name()
-		apiConfig, _ := ioutil.ReadDir(path_ + "/" + "config")
+		path_ := path.Join(apiFolder, api.Name())
+		apiConfig, _ := ioutil.ReadDir(path.Join(path_, "config"))
 		for _, routesJson := range apiConfig {
-			data, err := ioutil.ReadFile(path_ + "/" + "config" + "/" + routesJson.Name())
-			//fmt.Println(routesJson.Name())
+			data, err := ioutil.ReadFile(path.Join(path_, "config", routesJson.Name()))
 			if err != nil {
 				return groupRoutes
 			}
