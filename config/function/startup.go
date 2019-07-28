@@ -12,16 +12,16 @@ import (
 
 func Startup(router *gin.Engine) map[string][]getRoutes.RouteInfo {
 	route := getRoutes.Routes() //解析路由
-	mysql.MysqlClient()
+	db := mysql.ConnectClient() //连接数据库
 	//client := mongodb.MongodbInitial() //链接数据库
-	handler := template.BindHandler()
+	handler := template.Intatial(db, "test", "template")
 	routerFuncLoader(router, route, "template", handler)
 	return route
 }
 
 func routerFuncLoader(router *gin.Engine, routerHandeler map[string][]getRoutes.RouteInfo, api string, crMap map[string]reflect.Value) {
 	for k, v := range routerHandeler {
-		fmt.Println(k, v)
+		//fmt.Println(k, v)
 		if k == api {
 			groupRoute := router.Group(k)
 			for _, u := range v {

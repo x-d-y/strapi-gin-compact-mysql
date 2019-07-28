@@ -4,40 +4,36 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-	"reflect"
 	"strconv"
 
 	_ "github.com/go-sql-driver/mysql"
 )
 
-func where(query map[string]interface{}, dataform interface{}) string {
-	s := reflect.ValueOf(dataform)
-	typeOfT := s.Type()
+func where(query map[string]interface{}, dataform map[string]string) string {
 	var queryString string
-	for i := 0; i < s.NumField(); i++ {
-		f := s.Field(i)
+	i := 0
+	for formk, _ := range dataform {
 		for k, v := range query {
-			if k == typeOfT.Field(i).Name {
-				queryString += typeOfT.Field(i).Name + "=" + formater(k, v, f.Type())
+			if k == formk {
+				queryString += k + "=" + formater(k, v, dataform)
 				if i < len(query)-1 {
 					queryString += " AND "
 				}
+				i++
 			}
 		}
 	}
 	return queryString
 }
 
-func formater(k string, v interface{}, pro interface{}) string {
-	string_ := reflect.ValueOf("").Type()
-	int_ := reflect.ValueOf(0).Type()
-	bool_ := reflect.ValueOf(true).Type()
-	if pro == string_ {
+func formater(k string, v interface{}, pro map[string]string) string {
+
+	if pro[k] == "string" {
 		return_ := "'" + v.(string) + "'"
 		return return_
-	} else if pro == int_ {
+	} else if pro[k] == "int" {
 		return strconv.Itoa(v.(int))
-	} else if pro == bool_ {
+	} else if pro[k] == "bool" {
 		return "true"
 	} else {
 		return "error"
@@ -75,7 +71,7 @@ func Insert(db *sql.DB, table string, data map[string]interface{}) {
 
 }
 
-func Get(db *sql.DB, table string, query map[string]interface{}, dataform interface{}) {
+func Get(db *sql.DB, table string, query map[string]interface{}, dataform map[string]string) {
 	queryString := where(query, dataform)
 	rows, err := db.Query("select * from " + table + " WHERE " + queryString + ";")
 
@@ -119,7 +115,7 @@ func Get(db *sql.DB, table string, query map[string]interface{}, dataform interf
 	}
 }
 
-func Update(db *sql.DB, table string, data map[string]interface{}, query map[string]interface{}, dataform interface{}) {
+func Update(db *sql.DB, table string, data map[string]interface{}, query map[string]interface{}, dataform map[string]string) {
 	queryString := where(query, dataform)
 	var column string
 	var value []interface{}
@@ -146,7 +142,7 @@ func Update(db *sql.DB, table string, data map[string]interface{}, query map[str
 	fmt.Printf("ID=%d, affected=%d\n", lastId, rowCnt)
 }
 
-func Delete(db *sql.DB, table string, query map[string]interface{}, dataform interface{}) {
+func Delete(db *sql.DB, table string, query map[string]interface{}, dataform map[string]string) {
 	queryString := where(query, dataform)
 	stmt, err := db.Prepare("DELETE FROM " + table + " WHERE " + queryString + ";")
 	if err != nil {
@@ -165,27 +161,16 @@ func Delete(db *sql.DB, table string, query map[string]interface{}, dataform int
 	fmt.Printf("ID=%d, affected=%d\n", lastId, rowCnt)
 }
 
-func MysqlClient() *sql.DB {
-	table := "test"
+func ConnectClient() *sql.DB {
+	//able := "test"
 	db, err := sql.Open("mysql", "root:123456@/test1")
-	fmt.Println(err)
 	if err != nil {
 		log.Fatal(err)
 	}
-	type dataForm struct {
-		name   string
-		salary int
-		deptId int
-	}
-	dataform := dataForm{}
-	data_ := make(map[string]interface{})
-	data_["name"] = "xie"
-	data_["salary"] = 111
-	data_["deptId"] = 23
-	Get(db, table, data_, dataform)
 	return db
 }
 
+/*
 func main_() {
 
 	table := "test"
@@ -221,3 +206,4 @@ func main_() {
 	Update(db, table, data, query, dataform)
 	Delete(db, table, data, dataform)
 }
+*/

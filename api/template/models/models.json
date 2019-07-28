@@ -1,0 +1,5 @@
+{
+    "name":"string",
+    "salary":"int",
+    "deptId":"int"
+}
