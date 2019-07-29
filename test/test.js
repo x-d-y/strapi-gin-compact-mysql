@@ -36,8 +36,9 @@ async function post(){
   }
 
   let res = await Request("http://localhost:8080/template/post-test",'post',data)
-  // res = await Request("http://localhost:8080/test/put-test/111",'put',data)
-  // res = await Request("http://localhost:8080/test/get-test?name=xdy",'get',data)
+  data.
+  res = await Request("http://localhost:8080/template/update-Test/111",'put',data)
+  res = await Request("http://localhost:8080/template/gets-test?name=xdy",'get',data)
   // res = await Request("http://localhost:8080/test/delete-test/111",'delete',data)
   // res = await Request("http://localhost:8080/test/get-test/5d11a7aab07436cdcb64eec0",'get',data)
 
