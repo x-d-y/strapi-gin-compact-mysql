@@ -14,7 +14,7 @@ func Startup(router *gin.Engine) map[string][]getRoutes.RouteInfo {
 	route := getRoutes.Routes() //解析路由
 	db := mysql.ConnectClient() //连接数据库
 	//client := mongodb.MongodbInitial() //链接数据库
-	handler := template.Intatial(db, "test", "template")
+	handler := template.Intatial(db, "test2", "template")
 	routerFuncLoader(router, route, "template", handler)
 	return route
 }

@@ -9,8 +9,25 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-func where(query map[string]interface{}, dataform map[string]string) string {
+// name varchar(100) NULL,
+// salary INT NULL,
+// deptId INT NULL,
+func CreatTable() string {
+	sqlStr := `CREATE TABLE IF NOT EXISTS %s (
+		_id INT NOT NULL AUTO_INCREMENT,
+		%s
+		CONSTRAINT test2_PK PRIMARY KEY (_id)
+	)
+	ENGINE=InnoDB
+	DEFAULT CHARSET=utf8
+	COLLATE=utf8_general_ci;
+	`
+	return sqlStr
+}
+
+func where(query map[string]interface{}, dataform map[string]interface{}) string {
 	var queryString string
+	fmt.Println(dataform)
 	i := 0
 	for formk, _ := range dataform {
 		for k, v := range query {
@@ -23,12 +40,13 @@ func where(query map[string]interface{}, dataform map[string]string) string {
 			}
 		}
 	}
+	fmt.Println(queryString)
 	return queryString
 }
 
-func formater(k string, v interface{}, pro map[string]string) string {
+func formater(k string, v interface{}, pro map[string]interface{}) string {
 
-	if pro[k] == "string" {
+	if pro[k] == "varchar" {
 		return_ := "'" + v.(string) + "'"
 		return return_
 	} else if pro[k] == "int" {
@@ -71,7 +89,7 @@ func Insert(db *sql.DB, table string, data map[string]interface{}) {
 
 }
 
-func Get(db *sql.DB, table string, query map[string]interface{}, dataform map[string]string) {
+func Get(db *sql.DB, table string, query map[string]interface{}, dataform map[string]interface{}) {
 	queryString := where(query, dataform)
 	rows, err := db.Query("select * from " + table + " WHERE " + queryString + ";")
 
@@ -115,7 +133,7 @@ func Get(db *sql.DB, table string, query map[string]interface{}, dataform map[st
 	}
 }
 
-func Update(db *sql.DB, table string, data map[string]interface{}, query map[string]interface{}, dataform map[string]string) {
+func Update(db *sql.DB, table string, data map[string]interface{}, query map[string]interface{}, dataform map[string]interface{}) {
 	queryString := where(query, dataform)
 	var column string
 	var value []interface{}
@@ -142,7 +160,7 @@ func Update(db *sql.DB, table string, data map[string]interface{}, query map[str
 	fmt.Printf("ID=%d, affected=%d\n", lastId, rowCnt)
 }
 
-func Delete(db *sql.DB, table string, query map[string]interface{}, dataform map[string]string) {
+func Delete(db *sql.DB, table string, query map[string]interface{}, dataform map[string]interface{}) {
 	queryString := where(query, dataform)
 	stmt, err := db.Prepare("DELETE FROM " + table + " WHERE " + queryString + ";")
 	if err != nil {

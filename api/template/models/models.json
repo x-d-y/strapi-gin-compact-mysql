@@ -1,5 +1,28 @@
 {
-    "name":"string",
-    "salary":"int",
-    "deptId":"int"
+  "connectTable":"test",
+  "item":
+  {
+    "id": 
+    {
+      "dataType":"int",
+      "dataLength":"11",
+      "notNull":"NULL"      
+    },
+    "name":    
+    {
+      "dataType":"varchar",
+      "dataLength":"100",
+      "notNull":"NULL"      
+    },
+    "salary":    {
+      "dataType":"int",
+      "dataLength":"11",
+      "notNull":"NULL"      
+    },
+    "deptId":    {
+      "dataType":"int",
+      "dataLength":"11",
+      "notNull":"NULL"      
+    }
+  }
 }
