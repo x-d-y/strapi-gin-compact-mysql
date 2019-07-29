@@ -5,14 +5,16 @@ import (
 	"fmt"
 	"log"
 	"strconv"
+	"strings"
 
 	_ "github.com/go-sql-driver/mysql"
 )
 
-// name varchar(100) NULL,
-// salary INT NULL,
-// deptId INT NULL,
-func CreatTable() string {
+var (
+	tableColumn map[string]string
+)
+
+func CheckCreatTable(db *sql.DB, table string, column string) string {
 	sqlStr := `CREATE TABLE IF NOT EXISTS %s (
 		_id INT NOT NULL AUTO_INCREMENT,
 		%s
@@ -22,6 +24,11 @@ func CreatTable() string {
 	DEFAULT CHARSET=utf8
 	COLLATE=utf8_general_ci;
 	`
+	sqlStr = fmt.Sprintf(sqlStr, table, column)
+	_, err := db.Exec(sqlStr)
+	if err != nil {
+		log.Fatal("create database failed")
+	}
 	return sqlStr
 }
 
@@ -69,8 +76,16 @@ func Insert(db *sql.DB, table string, data map[string]interface{}) {
 	}
 	key = key[0 : len(key)-1]
 	questionMark = questionMark[0 : len(questionMark)-1]
+retry:
 	stmt, err := db.Prepare("INSERT INTO " + table + "(" + key + ") VALUES(" + questionMark + ");")
 	if err != nil {
+		errString := fmt.Sprintf("%s", err)
+		index := strings.Index(errString, "doesn't exist")
+		if index > -1 {
+			column := tableColumn[table]
+			CheckCreatTable(db, table, column)
+			goto retry
+		}
 		log.Fatal(err)
 	}
 	res, err := stmt.Exec(value...)
@@ -91,9 +106,16 @@ func Insert(db *sql.DB, table string, data map[string]interface{}) {
 
 func Get(db *sql.DB, table string, query map[string]interface{}, dataform map[string]interface{}) {
 	queryString := where(query, dataform)
+retry:
 	rows, err := db.Query("select * from " + table + " WHERE " + queryString + ";")
-
 	if err != nil {
+		errString := fmt.Sprintf("%s", err)
+		index := strings.Index(errString, "doesn't exist")
+		if index > -1 {
+			column := tableColumn[table]
+			CheckCreatTable(db, table, column)
+			goto retry
+		}
 		log.Fatal(err)
 	}
 
@@ -142,9 +164,16 @@ func Update(db *sql.DB, table string, data map[string]interface{}, query map[str
 		value = append(value, v)
 	}
 	column = column[0 : len(column)-1]
-
+retry:
 	stmt, err := db.Prepare("UPDATE " + table + " SET " + column + " WHERE " + queryString + ";")
 	if err != nil {
+		errString := fmt.Sprintf("%s", err)
+		index := strings.Index(errString, "doesn't exist")
+		if index > -1 {
+			column := tableColumn[table]
+			CheckCreatTable(db, table, column)
+			goto retry
+		}
 		log.Fatal(err)
 	}
 
@@ -162,8 +191,16 @@ func Update(db *sql.DB, table string, data map[string]interface{}, query map[str
 
 func Delete(db *sql.DB, table string, query map[string]interface{}, dataform map[string]interface{}) {
 	queryString := where(query, dataform)
+retry:
 	stmt, err := db.Prepare("DELETE FROM " + table + " WHERE " + queryString + ";")
 	if err != nil {
+		errString := fmt.Sprintf("%s", err)
+		index := strings.Index(errString, "doesn't exist")
+		if index > -1 {
+			column := tableColumn[table]
+			CheckCreatTable(db, table, column)
+			goto retry
+		}
 		log.Fatal(err)
 	}
 	res, err := stmt.Exec()
@@ -180,7 +217,6 @@ func Delete(db *sql.DB, table string, query map[string]interface{}, dataform map
 }
 
 func ConnectClient() *sql.DB {
-	//able := "test"
 	db, err := sql.Open("mysql", "root:123456@/test1")
 	if err != nil {
 		log.Fatal(err)
@@ -188,40 +224,7 @@ func ConnectClient() *sql.DB {
 	return db
 }
 
-/*
-func main_() {
-
-	table := "test"
-	db, err := sql.Open("mysql", "root:123456@/test1")
-	fmt.Println(err)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	defer db.Close()
-
-	data_ := make(map[string]interface{})
-
-	data_["name"] = "xie"
-	data_["salary"] = 111
-	data_["deptId"] = 23
-	Insert(db, table, data_)
-
-	data := make(map[string]interface{})
-	data["name"] = "sbt"
-	data["salary"] = 0
-	type dataForm struct {
-		name   string
-		salary int
-		deptId int
-	}
-
-	query := make(map[string]interface{})
-	query["name"] = "xie"
-	query["salary"] = 111
-	dataform := dataForm{}
-	Get(db, table, data_, dataform)
-	Update(db, table, data, query, dataform)
-	Delete(db, table, data, dataform)
+func TableColumn(tableColumn_ map[string]string) {
+	tableColumn = tableColumn_
+	fmt.Println(tableColumn)
 }
-*/

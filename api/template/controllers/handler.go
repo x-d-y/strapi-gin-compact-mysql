@@ -15,31 +15,20 @@ import (
 type Routers struct {
 }
 
-var db *sql.DB
-var table string
-var modelCfg map[string]interface{}
-var model map[string]interface{}
-var column string
-
-//tableC string, model map[string]string
-func checkForTable(column string) {
-	//a := "name varchar(100) NULL,salary int NULL,deptId int NULL,"
-	sql := fmt.Sprintf(mysql.CreatTable(), "test2", column)
-	fmt.Println(sql)
-	_, err := db.Exec(sql)
-	if err != nil {
-		fmt.Println("create database failed")
-	}
-}
+var (
+	db       *sql.DB
+	table    string
+	modelCfg map[string]interface{}
+	model    map[string]interface{}
+	column   string
+)
 
 func getModel(item map[string]interface{}) (map[string]interface{}, string) {
-	fmt.Println(item)
 	model_ := make(map[string]interface{})
 	createColumn := ""
 	_ = createColumn
 	for k, v := range item {
 		createColumn_ := `%s %s(%s) %s,`
-		fmt.Println(k, v)
 		dataType := ""
 		dataLength := ""
 		notNull := ""
@@ -59,15 +48,12 @@ func getModel(item map[string]interface{}) (map[string]interface{}, string) {
 		}
 		createColumn_ = fmt.Sprintf(createColumn_, k, dataType, dataLength, notNull)
 		createColumn += createColumn_
-
 	}
-	fmt.Println(createColumn, "!!!!!!!!!!!!!!!!!!!!")
 
 	return model_, createColumn
 }
 
-func Intatial(db_ *sql.DB, table_ string, apiFolder string) map[string]reflect.Value {
-
+func Initialization(db_ *sql.DB, table_ string, apiFolder string) (map[string]reflect.Value, string) {
 	db = db_
 	table = table_
 	modelJson := path.Join("api", apiFolder, "models", "models.json")
@@ -78,7 +64,6 @@ func Intatial(db_ *sql.DB, table_ string, apiFolder string) map[string]reflect.V
 	json.Unmarshal(modelString, &modelCfg)
 	item := modelCfg["item"].(map[string]interface{})
 	model, column = getModel(item)
-	fmt.Println(model, "~~~~~~")
 	var ruTest Routers
 	type ControllerMapsType map[string]reflect.Value
 	crMap := make(ControllerMapsType, 0)
@@ -89,8 +74,8 @@ func Intatial(db_ *sql.DB, table_ string, apiFolder string) map[string]reflect.V
 		mName := vft.Method(i).Name
 		crMap[mName] = vf.Method(i)
 	}
-	checkForTable(column)
-	return crMap
+	mysql.CheckCreatTable(db, table, column)
+	return crMap, column
 }
 
 /**************************************custom******************************************/
