@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+	"strconv"
 	"strings"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -92,6 +93,7 @@ retry:
 	if err != nil {
 		log.Fatal(err)
 	}
+	fmt.Println(res)
 	lastId, err := res.LastInsertId()
 	if err != nil {
 		log.Fatal(err)
@@ -104,7 +106,7 @@ retry:
 
 }
 
-func Get(db *sql.DB, table string, query map[string]interface{}, dataform map[string]interface{}) {
+func Get(db *sql.DB, table string, query map[string]interface{}, dataform map[string]interface{}) []interface{} {
 	queryString := where(query, dataform)
 retry:
 	rows, err := db.Query("select * from " + table + " WHERE " + queryString + ";")
@@ -133,26 +135,36 @@ retry:
 	for i := range values {
 		scanArgs[i] = &values[i]
 	}
-
+	var return_ []interface{}
 	for rows.Next() {
 		err = rows.Scan(scanArgs...)
 		if err != nil {
 			log.Fatal(err)
 		}
 		var value string
+		column := make(map[string]interface{})
 		for i, col := range values {
 			if col == nil {
 				value = "NULL"
 			} else {
 				value = string(col)
 			}
-			fmt.Println(columns[i], ":", value)
+			if dataform[columns[i]] == "varchar" {
+				column[columns[i]] = value
+			} else if dataform[columns[i]] == "int" {
+				int_, err := strconv.Atoi(value)
+				if err == nil {
+					column[columns[i]] = int_
+				}
+			} else {
+			}
 		}
-		fmt.Println("--------------")
+		return_ = append(return_, column)
 	}
 	if err = rows.Err(); err != nil {
 		log.Fatal(err)
 	}
+	return return_
 }
 
 func Update(db *sql.DB, table string, data map[string]interface{}, query map[string]interface{}, dataform map[string]interface{}) {
