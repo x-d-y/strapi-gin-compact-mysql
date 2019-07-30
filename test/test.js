@@ -38,14 +38,20 @@ async function post(){
   }
 
   let res = await Request("http://localhost:8080/template/post-test",'post',data)
-  data.name = "sbtao"
-  data.salary = 0
-  data.deptId = 0
-  res = await Request("http://localhost:8080/template/update-Test/30",'put',data)
-  res = await Request("http://localhost:8080/template/gets-test?name=xdy",'get',data)
   console.log(JSON.parse(res))
-  res = await Request("http://localhost:8080/template/delete-test/32",'delete',data)
+
+  data.name = "sbtaao"
+  data.salary = 1
+  data.deptId = 0
+
+  res = await Request("http://localhost:8080/template/gets-test?name=xdy",'get',data)
   res = await Request("http://localhost:8080/template/get-test/31",'get',data)
+  console.log(JSON.parse(res))
+  res = await Request("http://localhost:8080/template/delete-test/35",'delete',data)
+  console.log(JSON.parse(res))
+  res = await Request("http://localhost:8080/template/update-Test/5",'put',data)
+  console.log(JSON.parse(res))
+
 
 } 
 

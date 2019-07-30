@@ -66,7 +66,7 @@ func formater(k string, v interface{}, pro map[string]interface{}) string {
 	}
 }
 
-func Insert(db *sql.DB, table string, data map[string]interface{}) {
+func Insert(db *sql.DB, table string, data map[string]interface{}) (int64, int64) {
 	var key string
 	var value []interface{}
 	var questionMark string
@@ -103,7 +103,7 @@ retry:
 		log.Fatal(err)
 	}
 	fmt.Printf("ID=%d, affected=%d\n", lastId, rowCnt)
-
+	return lastId, rowCnt
 }
 
 func Get(db *sql.DB, table string, query map[string]interface{}, dataform map[string]interface{}) []interface{} {
@@ -167,10 +167,10 @@ retry:
 	return return_
 }
 
-func Update(db *sql.DB, table string, data map[string]interface{}, query map[string]interface{}, dataform map[string]interface{}) {
+func Update(db *sql.DB, table string, data map[string]interface{}, query map[string]interface{}, dataform map[string]interface{}) (int64, int64) {
 	queryString := where(query, dataform)
 	if queryString == "" {
-		return
+		return -1, -1
 	}
 	var column string
 	var value []interface{}
@@ -202,9 +202,10 @@ retry:
 		log.Fatal(err)
 	}
 	fmt.Printf("ID=%d, affected=%d\n", lastId, rowCnt)
+	return lastId, rowCnt
 }
 
-func Delete(db *sql.DB, table string, query map[string]interface{}, dataform map[string]interface{}) {
+func Delete(db *sql.DB, table string, query map[string]interface{}, dataform map[string]interface{}) (int64, int64) {
 	queryString := where(query, dataform)
 retry:
 	stmt, err := db.Prepare("DELETE FROM " + table + " WHERE " + queryString + ";")
@@ -229,6 +230,7 @@ retry:
 		log.Fatal(err)
 	}
 	fmt.Printf("ID=%d, affected=%d\n", lastId, rowCnt)
+	return lastId, rowCnt
 }
 
 func ConnectClient() *sql.DB {
