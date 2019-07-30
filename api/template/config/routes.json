@@ -17,12 +17,12 @@
       },
       {
         "method": "GET",
-        "path":"/get-test",
+        "path":"/get-test/:_id",
         "handler":"FindOne"
       },    
       {
         "method": "DELETE",
-        "path":"/delete-test",
+        "path":"/delete-test/:_id",
         "handler":"DeleteOne"
       }
     ]   

@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-	"strconv"
 	"strings"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -34,7 +33,6 @@ func CheckCreatTable(db *sql.DB, table string, column string) string {
 
 func where(query map[string]interface{}, dataform map[string]interface{}) string {
 	var queryString string
-	fmt.Println(dataform)
 	i := 0
 	for formk, _ := range dataform {
 		for k, v := range query {
@@ -47,17 +45,19 @@ func where(query map[string]interface{}, dataform map[string]interface{}) string
 			}
 		}
 	}
-	fmt.Println(queryString)
+
 	return queryString
 }
 
 func formater(k string, v interface{}, pro map[string]interface{}) string {
-
+	if k == "_id" {
+		return v.(string)
+	}
 	if pro[k] == "varchar" {
 		return_ := "'" + v.(string) + "'"
 		return return_
 	} else if pro[k] == "int" {
-		return strconv.Itoa(v.(int))
+		return v.(string) //strconv.Itoa(v.(int))
 	} else if pro[k] == "bool" {
 		return "true"
 	} else {
@@ -157,6 +157,9 @@ retry:
 
 func Update(db *sql.DB, table string, data map[string]interface{}, query map[string]interface{}, dataform map[string]interface{}) {
 	queryString := where(query, dataform)
+	if queryString == "" {
+		return
+	}
 	var column string
 	var value []interface{}
 	for k, v := range data {

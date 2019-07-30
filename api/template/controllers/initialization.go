@@ -74,5 +74,6 @@ func getModel(item map[string]interface{}) (map[string]interface{}, string) {
 		createColumn_ = fmt.Sprintf(createColumn_, k, dataType, dataLength, notNull)
 		createColumn += createColumn_
 	}
+	model_["_id"] = "int"
 	return model_, createColumn
 }

@@ -23,37 +23,45 @@ func (r *Routers) InsertOne(c *gin.Context) {
 	fmt.Println("this is test1Handler")
 }
 func (r *Routers) UpdateOne(c *gin.Context) {
-	fmt.Println(reflect.TypeOf(c.Params), "~~~~~~~~")
+	params := make(map[string]interface{})
+	for k, v := range c.Params {
+		fmt.Println(k, reflect.TypeOf(v))
+		params[v.Key] = []string{v.Value}[0]
+	}
 	data := make(map[string]interface{})
-	data["name"] = "xie"
-	data["salary"] = 111
-	data["deptId"] = 23
-	data_ := make(map[string]interface{})
-	data_["name"] = "taosb"
-	data_["salary"] = 0
-	data_["deptId"] = 0
-	mysql.Update(db, table, data_, data, model)
+	body, _ := ioutil.ReadAll(c.Request.Body)
+	if err := json.Unmarshal(body, &data); err != nil {
+		log.Println("data error", err)
+	}
+	mysql.Update(db, table, data, params, model)
 	fmt.Println("this is test2Handler")
+	c.String(200, "pong")
 }
 func (r *Routers) FindOne(c *gin.Context) {
+	params := make(map[string]interface{})
+	for k, v := range c.Params {
+		fmt.Println(k, reflect.TypeOf(v))
+		params[v.Key] = []string{v.Value}[0]
+	}
+	mysql.Get(db, table, params, model)
+
 	fmt.Println("this is test2Handler")
 }
 func (r *Routers) FindAll(c *gin.Context) {
-	query := c.Request.URL.Query()
-	_ = query
-	data_ := make(map[string]interface{})
-	data_["name"] = "xie"
-	data_["salary"] = 111
-	data_["deptId"] = 23
-	fmt.Println("this is test2Handler")
-
-	mysql.Get(db, table, data_, model)
+	query := make(map[string]interface{})
+	for k, v := range c.Request.URL.Query() {
+		fmt.Println(k, v)
+		fmt.Println(v[0])
+		query[k] = v[0]
+	}
+	mysql.Get(db, table, query, model)
 }
 func (r *Routers) DeleteOne(c *gin.Context) {
-	data_ := make(map[string]interface{})
-	data_["name"] = "taosb"
-	data_["salary"] = 0
-	data_["deptId"] = 0
-	mysql.Delete(db, table, data_, model)
+	params := make(map[string]interface{})
+	for k, v := range c.Params {
+		fmt.Println(k, reflect.TypeOf(v))
+		params[v.Key] = []string{v.Value}[0]
+	}
+	mysql.Delete(db, table, params, model)
 	fmt.Println("this is test2Handler")
 }

@@ -32,15 +32,19 @@ async function Request(Url,method,data){
 
 async function post(){
   data ={
-    name:"xdy"
+    name:"xdy",
+    salary:111,
+    deptId:23
   }
 
   let res = await Request("http://localhost:8080/template/post-test",'post',data)
-  data.
-  res = await Request("http://localhost:8080/template/update-Test/111",'put',data)
-  res = await Request("http://localhost:8080/template/gets-test?name=xdy",'get',data)
-  // res = await Request("http://localhost:8080/test/delete-test/111",'delete',data)
-  // res = await Request("http://localhost:8080/test/get-test/5d11a7aab07436cdcb64eec0",'get',data)
+  data.name = "sbtao"
+  data.salary = 0
+  data.deptId = 0
+  res = await Request("http://localhost:8080/template/update-Test/30",'put',data)
+  res = await Request("http://localhost:8080/template/gets-test?name=sbtao",'get',data)
+  res = await Request("http://localhost:8080/template/delete-test/32",'delete',data)
+  res = await Request("http://localhost:8080/template/get-test/31",'get',data)
 
 } 
 
