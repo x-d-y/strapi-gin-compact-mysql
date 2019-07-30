@@ -42,7 +42,7 @@ func Initialization(db_ *sql.DB, table_ string, apiFolder string, handlerSlice m
 		mName := vft.Method(i).Name
 		crMap[mName] = vf.Method(i)
 	}
-	mysql.CheckCreatTable(db, table, column)
+	mysql.CheckCreatTable(db, table, column, "")
 	handlerSlice[table] = crMap
 	tableColumn[table] = column
 	return handlerSlice, tableColumn

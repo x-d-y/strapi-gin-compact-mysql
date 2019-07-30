@@ -14,20 +14,46 @@ var (
 	tableColumn map[string]string
 )
 
-func CheckCreatTable(db *sql.DB, table string, column string) string {
-	sqlStr := `CREATE TABLE IF NOT EXISTS %s (
-		_id INT NOT NULL AUTO_INCREMENT,
+const tableManagerColumn string = `_Field varchar(100) NOT NULL,
+		_Type varchar(100) NOT NULL,
+		_Null varchar(100) NOT NULL,
+		_Key varchar(100) NULL,
+		_Default varchar(100) NULL,
+		_Extra varchar(100) NULL,`
+
+const tableManagerPK string = `CONSTRAINT tableManager_PK PRIMARY KEY (_Field)`
+const pk string = "_id INT NOT NULL AUTO_INCREMENT,CONSTRAINT test2_PK PRIMARY KEY (_id)"
+
+func sqlSelect(command string) string {
+	createTable := `CREATE TABLE IF NOT EXISTS %s (
 		%s
-		CONSTRAINT test2_PK PRIMARY KEY (_id)
+		%s
 	)
 	ENGINE=InnoDB
 	DEFAULT CHARSET=utf8
 	COLLATE=utf8_general_ci;
 	`
-	sqlStr = fmt.Sprintf(sqlStr, table, column)
+	var return_ string
+	switch command {
+	case "createTable":
+		return_ = createTable
+	default:
+		fmt.Println("can not parse the agrs")
+	}
+	return return_
+}
+
+func CheckCreatTable(db *sql.DB, table string, column string, pk_ string) string {
+	if pk_ == "" {
+		pk_ = pk
+	}
+	sqlStr := sqlSelect("createTable")
+	sqlStr = fmt.Sprintf(sqlStr, table, column, pk_)
+	fmt.Println(sqlStr)
 	_, err := db.Exec(sqlStr)
 	if err != nil {
-		log.Fatal("create database failed")
+		fmt.Println(table)
+		log.Fatal("create database failed", err)
 	}
 	return sqlStr
 }
@@ -84,7 +110,7 @@ retry:
 		index := strings.Index(errString, "doesn't exist")
 		if index > -1 {
 			column := tableColumn[table]
-			CheckCreatTable(db, table, column)
+			CheckCreatTable(db, table, column, pk)
 			goto retry
 		}
 		log.Fatal(err)
@@ -115,7 +141,7 @@ retry:
 		index := strings.Index(errString, "doesn't exist")
 		if index > -1 {
 			column := tableColumn[table]
-			CheckCreatTable(db, table, column)
+			CheckCreatTable(db, table, column, pk)
 			goto retry
 		}
 		log.Fatal(err)
@@ -186,7 +212,7 @@ retry:
 		index := strings.Index(errString, "doesn't exist")
 		if index > -1 {
 			column := tableColumn[table]
-			CheckCreatTable(db, table, column)
+			CheckCreatTable(db, table, column, pk)
 			goto retry
 		}
 		log.Fatal(err)
@@ -214,7 +240,7 @@ retry:
 		index := strings.Index(errString, "doesn't exist")
 		if index > -1 {
 			column := tableColumn[table]
-			CheckCreatTable(db, table, column)
+			CheckCreatTable(db, table, column, pk)
 			goto retry
 		}
 		log.Fatal(err)
@@ -238,6 +264,7 @@ func ConnectClient() *sql.DB {
 	if err != nil {
 		log.Fatal(err)
 	}
+	CheckCreatTable(db, "tableManager", tableManagerColumn, tableManagerPK)
 	return db
 }
 
