@@ -49,12 +49,21 @@ func CheckCreatTable(db *sql.DB, table string, column string, pk_ string) string
 	}
 	sqlStr := sqlSelect("createTable")
 	sqlStr = fmt.Sprintf(sqlStr, table, column, pk_)
-	fmt.Println(sqlStr)
-	_, err := db.Exec(sqlStr)
+	//fmt.Println(sqlStr)
+	res, err := db.Exec(sqlStr)
 	if err != nil {
 		fmt.Println(table)
 		log.Fatal("create database failed", err)
 	}
+	lastId, err := res.LastInsertId()
+	if err != nil {
+		log.Fatal(err)
+	}
+	rowCnt, err := res.RowsAffected()
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(lastId, rowCnt)
 	return sqlStr
 }
 
@@ -270,5 +279,5 @@ func ConnectClient() *sql.DB {
 
 func TableColumn(tableColumn_ map[string]string) {
 	tableColumn = tableColumn_
-	fmt.Println(tableColumn)
+	//fmt.Println(tableColumn)
 }

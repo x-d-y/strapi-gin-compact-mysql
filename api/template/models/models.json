@@ -4,25 +4,33 @@
   {
     "id": 
     {
-      "dataType":"int",
-      "dataLength":"11",
-      "notNull":"NULL"      
+      "Type":"int(11)",
+      "Null":"NULL",
+      "Key":"",
+      "Default":"",
+      "Extra":""      
     },
     "name":    
     {
-      "dataType":"varchar",
-      "dataLength":"100",
-      "notNull":"NULL"      
+      "Type":"varchar(100)",
+      "Null":"NULL",
+      "Key":"",
+      "Default":"",
+      "Extra":""      
     },
     "salary":    {
-      "dataType":"int",
-      "dataLength":"11",
-      "notNull":"NULL"      
+      "Type":"int(11)",
+      "Null":"NULL",
+      "Key":"",
+      "Default":"",
+      "Extra":""     
     },
     "deptId":    {
-      "dataType":"int",
-      "dataLength":"11",
-      "notNull":"NULL"      
+      "Type":"int(11)",
+      "Null":"NULL",
+      "Key":"",
+      "Default":"",
+      "Extra":""      
     }
   }
 }

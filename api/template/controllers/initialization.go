@@ -53,25 +53,28 @@ func getModel(item map[string]interface{}) (map[string]interface{}, string) {
 	createColumn := ""
 	_ = createColumn
 	for k, v := range item {
-		createColumn_ := `%s %s(%s) %s,`
-		dataType := ""
-		dataLength := ""
-		notNull := ""
+		createColumn_ := `%s %s %s,`
+		Type := ""
+		Null := ""
 		v__ := v.(map[string]interface{})
 		for k_, v_ := range v__ {
 			switch k_ {
-			case "dataType":
+			case "Type":
 				model_[k] = v_
-				dataType = v_.(string)
-			case "dataLength":
-				dataLength = v_.(string)
-			case "notNull":
-				notNull = v_.(string)
+				Type = v_.(string)
+			case "Null":
+				Null = v_.(string)
+			case "Key":
+				//Key
+			case "Default":
+				//Default
+			case "Extra":
+				//Extra
 			default:
 				fmt.Println("can not parse the agrs")
 			}
 		}
-		createColumn_ = fmt.Sprintf(createColumn_, k, dataType, dataLength, notNull)
+		createColumn_ = fmt.Sprintf(createColumn_, k, Type, Null)
 		createColumn += createColumn_
 	}
 	model_["_id"] = "int"
