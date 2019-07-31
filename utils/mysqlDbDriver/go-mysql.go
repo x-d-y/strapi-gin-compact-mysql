@@ -89,12 +89,12 @@ func formater(k string, v interface{}, pro map[string]interface{}) string {
 	if k == "_id" {
 		return v.(string)
 	}
-	if pro[k] == "varchar" {
+	if strings.Index(pro[k].(string), "varchar") > -1 {
 		return_ := "'" + v.(string) + "'"
 		return return_
-	} else if pro[k] == "int" {
+	} else if strings.Index(pro[k].(string), "int") > -1 {
 		return v.(string) //strconv.Itoa(v.(int))
-	} else if pro[k] == "bool" {
+	} else if strings.Index(pro[k].(string), "bool") > -1 {
 		return "true"
 	} else {
 		return "error"
@@ -184,9 +184,10 @@ retry:
 			} else {
 				value = string(col)
 			}
-			if dataform[columns[i]] == "varchar" {
+
+			if strings.Index(dataform[columns[i]].(string), "varchar") > -1 {
 				column[columns[i]] = value
-			} else if dataform[columns[i]] == "int" {
+			} else if strings.Index(dataform[columns[i]].(string), "int") > -1 {
 				int_, err := strconv.Atoi(value)
 				if err == nil {
 					column[columns[i]] = int_
