@@ -14,14 +14,17 @@ var (
 	tableColumn map[string]string
 )
 
-const tableManagerColumn string = `_Field varchar(100) NOT NULL,
+const tableManagerColumn string = `
+		_Table varchar(100) NOT NULL,		
+		_Field varchar(100) NOT NULL,
 		_Type varchar(100) NOT NULL,
 		_Null varchar(100) NOT NULL,
 		_Key varchar(100) NULL,
 		_Default varchar(100) NULL,
-		_Extra varchar(100) NULL,`
+		_Extra varchar(100) NULL,
+		`
 
-const tableManagerPK string = `CONSTRAINT tableManager_PK PRIMARY KEY (_Field)`
+const tableManagerPK string = `CONSTRAINT tableManager_PK PRIMARY KEY (_Table)`
 const pk string = "_id INT NOT NULL AUTO_INCREMENT,CONSTRAINT test2_PK PRIMARY KEY (_id)"
 
 func sqlSelect(command string) string {

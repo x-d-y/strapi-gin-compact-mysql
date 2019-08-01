@@ -22,6 +22,13 @@ var (
 	column   string
 )
 
+func tableManagerCheck(item map[string]interface{}) {
+	query := make(map[string]interface{})
+	query["_Table"] = table
+	//mysql.Get(db, "tableManager")
+	return
+}
+
 func Initialization(db_ *sql.DB, table_ string, apiFolder string, handlerSlice map[string]interface{}, tableColumn map[string]string) (map[string]interface{}, map[string]string) {
 	db = db_
 	table = table_
@@ -32,7 +39,9 @@ func Initialization(db_ *sql.DB, table_ string, apiFolder string, handlerSlice m
 	}
 	json.Unmarshal(modelString, &modelCfg)
 	item := modelCfg["item"].(map[string]interface{})
+	fmt.Println(item, "~~~~~~~")
 	model, column = getModel(item)
+
 	var ruTest Routers
 	crMap := make(map[string]reflect.Value, 0)
 	vf := reflect.ValueOf(&ruTest)
