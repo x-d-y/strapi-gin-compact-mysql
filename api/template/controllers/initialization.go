@@ -22,12 +22,50 @@ var (
 	column   string
 )
 
-func tableManagerCheck(item map[string]interface{}) {
-	query := make(map[string]interface{})
-	query["_Table"] = table
-	//mysql.Get(db, "tableManager")
-	return
-}
+// func tableManagerCheck(item map[string]interface{}, modelString string) {
+// 	model := make(map[string]interface{})
+// 	model["_Table"] = "varchar(100)"
+// 	model["_Property"] = "text"
+// 	query := make(map[string]interface{})
+// 	query["_Table"] = table
+// 	modelString_ := mysql.Get(db, "tableManager", query, model)
+// 	if len(modelString_) == 0 {
+// 		goto insertTable
+// 	}
+// 	if modelString_[0].(map[string]interface{})["_Property"] == modelString {
+// 		return
+// 	} else {
+// 		//fmt.Println(modelString_[0].(map[string]interface{})["_Property"], "~~~~~~")
+// 		Mms_ := make(map[string]interface{})
+// 		Mms := make(map[string]interface{})
+// 		//fmt.Println(reflect.TypeOf(modelString_[0].(map[string]interface{})["_Property"]))
+// 		json.Unmarshal([]byte(modelString_[0].(map[string]interface{})["_Property"].(string)), &Mms_)
+// 		json.Unmarshal([]byte(modelString), &Mms)
+// 		fmt.Println(Mms["item"])
+// 		fmt.Println(Mms_["item"])
+// 		for k, v := range Mms["item"].(map[string]interface{}) {
+// 			fmt.Println(v.(map[string]interface{}), "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+// 			fmt.Println(Mms_["item"].(map[string]interface{})[k], "@@@@@@@@@@@@@@@@@")
+// 			// if v.(map[string]interface{}) == Mms_["item"].(map[string]interface{})[k].(map[string]interface{}) {
+// 			// 	fmt.Println("ok")
+// 			// } else {
+// 			// 	fmt.Println("no ok")
+// 			// }
+// 		}
+// 		return
+// 	}
+// insertTable:
+// 	data := make(map[string]interface{})
+// 	data["_Table"] = "template"
+// 	data["_Property"] = string(modelString)
+// 	mysql.Insert(db, "tableManager", data)
+// 	add := make(map[string]interface{})
+// 	remove := make(map[string]interface{})
+// 	modify := make(map[string]interface{})
+// 	_, _, _ = add, remove, modify
+
+// 	return
+// }
 
 func Initialization(db_ *sql.DB, table_ string, apiFolder string, handlerSlice map[string]interface{}, tableColumn map[string]string) (map[string]interface{}, map[string]string) {
 	db = db_
@@ -39,9 +77,7 @@ func Initialization(db_ *sql.DB, table_ string, apiFolder string, handlerSlice m
 	}
 	json.Unmarshal(modelString, &modelCfg)
 	item := modelCfg["item"].(map[string]interface{})
-	fmt.Println(item, "~~~~~~~")
 	model, column = getModel(item)
-
 	var ruTest Routers
 	crMap := make(map[string]reflect.Value, 0)
 	vf := reflect.ValueOf(&ruTest)

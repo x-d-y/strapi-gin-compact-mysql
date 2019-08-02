@@ -16,12 +16,7 @@ var (
 
 const tableManagerColumn string = `
 		_Table varchar(100) NOT NULL,		
-		_Field varchar(100) NOT NULL,
-		_Type varchar(100) NOT NULL,
-		_Null varchar(100) NOT NULL,
-		_Key varchar(100) NULL,
-		_Default varchar(100) NULL,
-		_Extra varchar(100) NULL,
+		_Property text NOT NULL,
 		`
 
 const tableManagerPK string = `CONSTRAINT tableManager_PK PRIMARY KEY (_Table)`
@@ -52,7 +47,6 @@ func CheckCreatTable(db *sql.DB, table string, column string, pk_ string) string
 	}
 	sqlStr := sqlSelect("createTable")
 	sqlStr = fmt.Sprintf(sqlStr, table, column, pk_)
-	//fmt.Println(sqlStr)
 	res, err := db.Exec(sqlStr)
 	if err != nil {
 		fmt.Println(table)
@@ -65,8 +59,9 @@ func CheckCreatTable(db *sql.DB, table string, column string, pk_ string) string
 	rowCnt, err := res.RowsAffected()
 	if err != nil {
 		log.Fatal(err)
+		fmt.Println(lastId, rowCnt)
 	}
-	fmt.Println(lastId, rowCnt)
+
 	return sqlStr
 }
 
@@ -93,6 +88,9 @@ func formater(k string, v interface{}, pro map[string]interface{}) string {
 		return v.(string)
 	}
 	if strings.Index(pro[k].(string), "varchar") > -1 {
+		return_ := "'" + v.(string) + "'"
+		return return_
+	} else if strings.Index(pro[k].(string), "text") > -1 {
 		return_ := "'" + v.(string) + "'"
 		return return_
 	} else if strings.Index(pro[k].(string), "int") > -1 {
@@ -190,6 +188,8 @@ retry:
 
 			if strings.Index(dataform[columns[i]].(string), "varchar") > -1 {
 				column[columns[i]] = value
+			} else if strings.Index(dataform[columns[i]].(string), "text") > -1 {
+				column[columns[i]] = value
 			} else if strings.Index(dataform[columns[i]].(string), "int") > -1 {
 				int_, err := strconv.Atoi(value)
 				if err == nil {
@@ -277,7 +277,7 @@ func ConnectClient() *sql.DB {
 	if err != nil {
 		log.Fatal(err)
 	}
-	CheckCreatTable(db, "tableManager", tableManagerColumn, tableManagerPK)
+	//CheckCreatTable(db, "tableManager", tableManagerColumn, tableManagerPK)
 	return db
 }
 
