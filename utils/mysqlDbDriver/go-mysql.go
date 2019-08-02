@@ -2,8 +2,12 @@ package mysql
 
 import (
 	"database/sql"
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"log"
+	"os"
+	"path"
 	"strconv"
 	"strings"
 
@@ -273,7 +277,16 @@ retry:
 }
 
 func ConnectClient() *sql.DB {
-	db, err := sql.Open("mysql", "root:123456@/test1")
+
+	mDbCfg := make(map[string]interface{})
+	dbCfg := path.Join("config", "environments", "developments", "database.json")
+	modelString, err := ioutil.ReadFile(dbCfg)
+	if err != nil {
+		fmt.Println(err)
+	}
+	json.Unmarshal(modelString, &mDbCfg)
+	dbInfo := fmt.Sprintf("%s:%s@/%s", mDbCfg["databaseAdmin"], os.Getenv(mDbCfg["databasePasswd"].(string)), mDbCfg["database"])
+	db, err := sql.Open("mysql", dbInfo) //"root:123456@/test1")
 	if err != nil {
 		log.Fatal(err)
 	}
