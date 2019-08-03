@@ -7,8 +7,7 @@ import (
 
 func main() {
 	router := gin.Default()
-	routerHandeler := startup.Startup(router)
-	_ = routerHandeler
-	router.Run(":8080")
+	port := startup.Startup(router)
+	router.Run(":" + port["serverPort"].(string))
 
 }

@@ -9,6 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+/*******************************数据库参数解析************************************/
 func GetBody(c *gin.Context) map[string]interface{} {
 	body, _ := ioutil.ReadAll(c.Request.Body)
 	data := make(map[string]interface{})
@@ -34,4 +35,15 @@ func GetQuery(c *gin.Context) map[string]interface{} {
 		query[k] = v[0]
 	}
 	return query
+}
+
+/************************************配置文件参数解析******************************************/
+func CfgParse(path_ string) map[string]interface{} {
+	mCfg := make(map[string]interface{})
+	modelString, err := ioutil.ReadFile(path_)
+	if err != nil {
+		fmt.Println(err)
+	}
+	json.Unmarshal(modelString, &mCfg)
+	return mCfg
 }

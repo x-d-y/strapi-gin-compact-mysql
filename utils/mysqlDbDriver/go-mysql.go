@@ -2,9 +2,7 @@ package mysql
 
 import (
 	"database/sql"
-	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"os"
 	"path"
@@ -12,6 +10,7 @@ import (
 	"strings"
 
 	_ "github.com/go-sql-driver/mysql"
+	parse "github.com/xdy/gin/utils/gin-parser"
 )
 
 var (
@@ -277,14 +276,8 @@ retry:
 }
 
 func ConnectClient() *sql.DB {
-
-	mDbCfg := make(map[string]interface{})
 	dbCfg := path.Join("config", "environments", "developments", "database.json")
-	modelString, err := ioutil.ReadFile(dbCfg)
-	if err != nil {
-		fmt.Println(err)
-	}
-	json.Unmarshal(modelString, &mDbCfg)
+	mDbCfg := parse.CfgParse(dbCfg)
 	dbInfo := fmt.Sprintf("%s:%s@/%s", mDbCfg["databaseAdmin"], os.Getenv(mDbCfg["databasePasswd"].(string)), mDbCfg["database"])
 	db, err := sql.Open("mysql", dbInfo) //"root:123456@/test1")
 	if err != nil {
