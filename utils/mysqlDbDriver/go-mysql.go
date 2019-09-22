@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"path"
+	"path/filepath"
 	"strconv"
 	"strings"
 
@@ -276,7 +277,14 @@ retry:
 }
 
 func ConnectClient() *sql.DB {
-	dbCfg := path.Join("config", "environments", "developments", "database.json")
+	var AppPath string
+	var err error
+	if AppPath, err = filepath.Abs(filepath.Dir(os.Args[0])); err != nil {
+		panic(err)
+	}
+	fmt.Println(AppPath)
+
+	dbCfg := path.Join("config", "environments", "debug", "database.json")
 	mDbCfg := parse.CfgParse(dbCfg)
 	dbInfo := fmt.Sprintf("%s:%s@/%s", mDbCfg["databaseAdmin"], os.Getenv(mDbCfg["databasePasswd"].(string)), mDbCfg["database"])
 	db, err := sql.Open("mysql", dbInfo) //"root:123456@/test1")
